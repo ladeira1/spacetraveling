@@ -1,1 +1,12 @@
-// TODO
+.container {
+  width: 100vw;
+  max-width: 900px;
+  height: 8vh;
+
+  margin: 0 auto;
+
+  display: flex;
+  align-items: flex-end;
+
+  position: sticky;
+}
