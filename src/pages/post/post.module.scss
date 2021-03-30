@@ -1,1 +1,79 @@
-// TODO
+.container {
+  width: 100%;
+}
+
+.post {
+  padding: 0 2%;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  section {
+    max-width: 700px;
+    margin: 5rem auto 0;
+
+    header {
+      h1 {
+        font-size: 3rem;
+      }
+
+      div {
+        margin-top: 1rem;
+
+        display: flex;
+        align-items: center;
+
+        * {
+          color: var(--gray-400);
+          font-size: 1.1rem;
+        }
+
+        :not(:first-child) {
+          margin-left: 0.5rem;
+        }
+
+        :nth-child(odd):not(:first-child) {
+          margin-left: 1.5rem;
+        }
+      }
+    }
+  }
+}
+
+.topicsList {
+  margin-top: 3rem;
+
+  header {
+    font-size: 2.2rem;
+    font-weight: 600;
+    line-height: 6rem;
+  }
+}
+
+.postContent {
+  font-size: 1.2rem;
+  line-height: 1.8rem;
+  text-align: justify;
+  margin-bottom: 1.5rem;
+
+  a, button, strong {
+    color: var(--pink-500);
+  }
+
+  a, button {
+    text-decoration: none;
+    transition: filter 0.2s;
+
+    :hover {
+      filter: brightness(0.9);
+    }
+  }
+}

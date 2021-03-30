@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 
-import { FiUser } from 'react-icons/fi'
+import { FiCalendar, FiUser } from 'react-icons/fi'
 
 import { GetStaticProps } from 'next';
 
@@ -40,11 +40,12 @@ export default function Home() {
       <main className={styles.container}>
         <div className={styles.list}>
           {temp.map(t => (
-            <Link href="/" key={t.id}>
+            <Link href={`/post/${t.id}`} key={t.id}>
               <a>
                 <strong>Como utilizar react hooks</strong>
                 <p>alo alo alo alo alo alo alo alo alo alo alo alo alo alo alo alo alo alo</p>
                 <footer>
+                  <FiCalendar />
                   <time>29 Mar 2021</time>
                   <FiUser />
                   <span>Joao Ladeira</span>
