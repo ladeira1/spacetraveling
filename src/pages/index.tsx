@@ -32,11 +32,16 @@ interface PostPagination {
 
 interface HomeProps {
   postsPagination: PostPagination;
+  preview: boolean;
 }
 
-export default function Home({ postsPagination }: HomeProps) {
+export default function Home({ postsPagination, preview }: HomeProps) {
   const [posts, setPosts] = useState(postsPagination.results)
   const [nextPage, setNextPage] = useState<string | null>(postsPagination.next_page)
+
+  if(preview) {
+    console.log(postsPagination)
+  }
 
   async function handleSearchForMorePosts() {
     fetch(nextPage)
@@ -60,6 +65,7 @@ export default function Home({ postsPagination }: HomeProps) {
       <Head>
         <title>Home | spacetraveling.</title>
       </Head>
+
       <main className={styles.container}>
         <div className={styles.list}>
           {posts.map(post => (
@@ -88,15 +94,27 @@ export default function Home({ postsPagination }: HomeProps) {
           </footer>
         )}
       </main>
+
+      {preview && (
+        <aside>
+          <Link href="/api/exit-preview">
+            <a>Sair do modo Preview</a>
+          </Link>
+        </aside>
+      )}
     </>
   )
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps<HomeProps> = async ({ preview = false, previewData }) => {
   const prismic = getPrismicClient();
   const postsResponse = await prismic.query(
     [Prismic.predicates.at('document.type', 'post')],
-    { fetch: ['post.title', 'post.subtitle', 'post.author'],  pageSize: 1 }
+    {
+      fetch: ['post.title', 'post.subtitle', 'post.author'],
+      pageSize: 2,
+      ref: previewData?.ref ?? null,
+    },
   );
 
   const posts = postsResponse.results.map(post => {
@@ -113,7 +131,7 @@ export const getStaticProps: GetStaticProps = async () => {
   }
 
   return {
-    props: { postsPagination },
+    props: { postsPagination, preview },
     revalidate: 30
   }
 };

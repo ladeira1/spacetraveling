@@ -9,9 +9,11 @@ import styles from './post.module.scss';
 
 import Header from '../../components/Header'
 import { useRouter } from 'next/router';
+import { Comments } from '../../components/Comments';
 
 interface Post {
   first_publication_date: string | null;
+  last_publication_date: string | null;
   data: {
     title: string;
     banner: {
@@ -29,13 +31,23 @@ interface Post {
 
 interface PostProps {
   post: Post;
+  nextPost?: { uid: string; title: string };
+  prevPost?: { uid: string; title: string };
 }
 
-export default function Post({ post }: PostProps) {
+export default function Post({ post, nextPost, prevPost }: PostProps) {
   const router = useRouter()
 
   if(router.isFallback) {
     return <h1>Carregando...</h1>
+  }
+
+  function handleGoToPrevPost() {
+    router.push(`/post/${prevPost.uid}`)
+  }
+
+  function handleGoToNextPost() {
+    router.push(`/post/${nextPost.uid}`)
   }
 
   return (
@@ -60,6 +72,14 @@ export default function Post({ post }: PostProps) {
                 <FiClock />
                 <time>4 min</time>
               </div>
+
+              <aside>
+                <time>{format(
+                  new Date(post?.last_publication_date),
+                  "'editado em' dd MMM yyyy, 'às' hh:mm"
+                  )}
+                </time>
+              </aside>
             </header>
 
             <div className={styles.topicsList}>
@@ -79,9 +99,25 @@ export default function Post({ post }: PostProps) {
                 </div>
               ))}
             </div>
-
           </section>
         </article>
+        <footer className={styles.otherPosts}>
+          {prevPost && (
+            <button type="button" onClick={handleGoToPrevPost}>
+              <p>{prevPost.title}</p>
+              <p>Post anterior</p>
+            </button>
+          )}
+
+          {nextPost && (
+            <button type="button" onClick={handleGoToNextPost}>
+              <p>{nextPost.title}</p>
+              <p>Próximo Post</p>
+            </button>
+          )}
+        </footer>
+
+        <Comments />
       </main>
     </>
   )
@@ -109,10 +145,33 @@ export const getStaticProps = async ({ req, params }) => {
   const prismic = getPrismicClient();
   const response = await prismic.getByUID('post', String(slug), {});
 
+
+
   try {
+    const prevPost = await prismic.query(
+      [Prismic.predicates.at('document.type', 'post')],
+      {
+        fetch: 'post.title',
+        pageSize: 1,
+        after : `${response.uid}`,
+        orderings: '[document.first_publication_date desc]'
+      },
+    )
+
+    const nextPost = await prismic.query(
+      [Prismic.predicates.at('document.type', 'post')],
+      {
+        fetch: 'post.title',
+        pageSize: 1,
+        after : `${response.uid}`,
+        orderings: '[document.first_publication_date]'
+      },
+    )
+
     const post = {
       uid: response.uid,
       first_publication_date: response.first_publication_date,
+      last_publication_date: response.last_publication_date,
       data: {
         title: response.data.title,
         subtitle: response.data.subtitle,
@@ -124,8 +183,18 @@ export const getStaticProps = async ({ req, params }) => {
       }
     }
 
+    const pp = prevPost.results[0]? {
+      uid: prevPost.results[0].uid,
+      title: prevPost.results[0].data.title,
+    } : null
+
+    const np = nextPost.results[0]? {
+      uid: nextPost.results[0].uid,
+      title: nextPost.results[0].data.title,
+    } : null
+
     return {
-      props: { post },
+      props: { post, prevPost: pp, nextPost: np },
       revalidate: 60 * 60
     }
   } catch {

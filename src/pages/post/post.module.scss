@@ -60,6 +60,11 @@
           }
         }
       }
+
+      time {
+        color: var(--gray-400);
+        line-height: 2rem;
+      }
     }
   }
 }
@@ -90,6 +95,36 @@
 
     :hover {
       filter: brightness(0.9);
+    }
+  }
+}
+
+.otherPosts {
+  max-width: 700px;
+
+  margin:0 auto;
+  padding: 1% 0;
+
+  display: flex;
+  justify-content: space-between;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  button {
+    border: none;
+    background: transparent;
+
+    text-align: left;
+
+    p:first-child {
+      color: var(--gray-200);
+      font-size: 1.15rem;
+      line-height: 2rem;
+    }
+
+    p:last-child {
+      color: var(--pink-500);
+
     }
   }
 }
