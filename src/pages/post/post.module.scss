@@ -3,7 +3,7 @@
 }
 
 .post {
-  padding: 0 2%;
+  padding: 0 3%;
   margin: 0 auto;
 
   display: flex;
@@ -12,8 +12,12 @@
   justify-content: center;
 
   img {
-    max-width: 1000px;
+    width: 100%;
     margin: 0 auto;
+
+    @media screen  and (min-width: 500px) {
+      max-width: 1000px;
+    }
   }
 
   section {
@@ -33,7 +37,7 @@
 
         * {
           color: var(--gray-400);
-          font-size: 1.1rem;
+          font-size: 0.8rem;
         }
 
         :not(:first-child) {
@@ -42,6 +46,18 @@
 
         :nth-child(odd):not(:first-child) {
           margin-left: 1.5rem;
+        }
+
+        @media screen and (min-width: 370px) {
+          * {
+            font-size: 0.9rem;
+          }
+        }
+
+        @media screen and (min-width: 410px) {
+          * {
+            font-size: 1.1rem;
+          }
         }
       }
     }
